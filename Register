@@ -25,39 +25,50 @@ def update_label(digit):
 
 root = tk.Tk()
 
+# Create a frame for the register buttons
+register_frame = tk.Frame(root, padx=10, pady=10)
+register_frame.pack()
+
 # Create a label to display the entered amount
 label = tk.Label(root, text="0.00")
 label.pack()
 
 # Create buttons for digits 0 through 9
-button0 = tk.Button(root, text="0", width=10, command=lambda: update_label(0))
-button0.pack(side=tk.LEFT)
+button0 = tk.Button(register_frame, text="0", width=10, command=lambda: update_label(0))
+button0.grid(row=3, column=0)
 
-button1 = tk.Button(root, text="1", width=10, command=lambda: update_label(1))
-button1.pack(side=tk.LEFT)
+button1 = tk.Button(register_frame, text="1", width=10, command=lambda: update_label(1))
+button1.grid(row=0, column=0)
 
-button2 = tk.Button(root, text="2", width=10, command=lambda: update_label(2))
-button2.pack(side=tk.LEFT)
+button2 = tk.Button(register_frame, text="2", width=10, command=lambda: update_label(2))
+button2.grid(row=0, column=1)
 
-button3 = tk.Button(root, text="3", width=10, command=lambda: update_label(3))
-button3.pack(side=tk.LEFT)
+button3 = tk.Button(register_frame, text="3", width=10, command=lambda: update_label(3))
+button3.grid(row=0, column=2)
 
-button4 = tk.Button(root, text="4", width=10, command=lambda: update_label(4))
-button4.pack(side=tk.LEFT)
+button4 = tk.Button(register_frame, text="4", width=10, command=lambda: update_label(4))
+button4.grid(row=1, column=0)
 
-button5 = tk.Button(root, text="5", width=10, command=lambda: update_label(5))
-button5.pack(side=tk.LEFT)
+button5 = tk.Button(register_frame, text="5", width=10, command=lambda: update_label(5))
+button5.grid(row=1, column=1)
 
-button6 = tk.Button(root, text="6", width=10, command=lambda: update_label(6))
-button6.pack(side=tk.LEFT)
+button6 = tk.Button(register_frame, text="6", width=10, command=lambda: update_label(6))
+button6.grid(row=1, column=2)
 
-button7 = tk.Button(root, text="7", width=10, command=lambda: update_label(7))
-button7.pack(side=tk.LEFT)
+button7 = tk.Button(register_frame, text="7", width=10, command=lambda: update_label(7))
+button7.grid(row=2, column=0)
 
-button8 = tk.Button(root, text="8", width=10, command=lambda: update_label(8))
-button8.pack(side=tk.LEFT)
+button8 = tk.Button(register_frame, text="8", width=10, command=lambda: update_label(8))
+button8.grid(row=2, column=1)
 
-button9 = tk.Button(root, text="9", width=10, command=lambda: update_label(9))
-button9.pack(side=tk.LEFT)
+button9 = tk.Button(register_frame, text="9", width=10, command=lambda: update_label(9))
+button9.grid(row=2, column=2)
+
+# Create blank buttons to fill the extra space
+button_blank1 = tk.Button(register_frame, text="", width=10, state=tk.DISABLED)
+button_blank1.grid(row=3, column=1)
+
+button_blank2 = tk.Button(register_frame, text="", width=10, state=tk.DISABLED)
+button_blank2.grid(row=3, column=2)
 
 root.mainloop()
