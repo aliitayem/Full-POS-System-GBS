@@ -1,0 +1,60 @@
+import tkinter as tk
+
+def update_label(digit):
+    current_text = label.cget("text")
+    
+    # Remove the existing decimal point if present
+    current_text = current_text.replace(".", "")
+    
+    # Add the clicked digit to the current text
+    current_text += str(digit)
+    
+    # Insert the decimal point at the appropriate position
+    if len(current_text) == 1:
+        current_text = "0.0" + current_text
+    elif len(current_text) == 2:
+        current_text = "0." + current_text
+    else:
+        current_text = current_text[:-2] + "." + current_text[-2:]
+    
+    # Update the label text
+    label.config(text=current_text)
+
+root = tk.Tk()
+
+# Create a label to display the entered amount
+label = tk.Label(root, text="0.00")
+label.pack()
+
+# Create buttons for digits 0 through 9
+button0 = tk.Button(root, text="0", width=10, command=lambda: update_label(0))
+button0.pack(side=tk.LEFT)
+
+button1 = tk.Button(root, text="1", width=10, command=lambda: update_label(1))
+button1.pack(side=tk.LEFT)
+
+button2 = tk.Button(root, text="2", width=10, command=lambda: update_label(2))
+button2.pack(side=tk.LEFT)
+
+button3 = tk.Button(root, text="3", width=10, command=lambda: update_label(3))
+button3.pack(side=tk.LEFT)
+
+button4 = tk.Button(root, text="4", width=10, command=lambda: update_label(4))
+button4.pack(side=tk.LEFT)
+
+button5 = tk.Button(root, text="5", width=10, command=lambda: update_label(5))
+button5.pack(side=tk.LEFT)
+
+button6 = tk.Button(root, text="6", width=10, command=lambda: update_label(6))
+button6.pack(side=tk.LEFT)
+
+button7 = tk.Button(root, text="7", width=10, command=lambda: update_label(7))
+button7.pack(side=tk.LEFT)
+
+button8 = tk.Button(root, text="8", width=10, command=lambda: update_label(8))
+button8.pack(side=tk.LEFT)
+
+button9 = tk.Button(root, text="9", width=10, command=lambda: update_label(9))
+button9.pack(side=tk.LEFT)
+
+root.mainloop()
