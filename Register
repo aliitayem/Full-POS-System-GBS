@@ -9,8 +9,12 @@ def update_label(digit):
     # Remove the existing decimal point if present
     current_text = current_text.replace(".", "")
     
-    # Add the clicked digit to the current text
-    current_text += str(digit)
+    # Handle the special case of '00'
+    if digit == '00':
+        current_text += '00'
+    else:
+        # Add the clicked digit to the current text
+        current_text += str(digit)
     
     # Insert the decimal point at the appropriate position
     if len(current_text) == 1:
@@ -36,6 +40,10 @@ label.pack()
 # Create button0 for digit 0
 button0 = tk.Button(register_frame, text="0", width=10, command=lambda: update_label(0))
 button0.grid(row=4, column=0)
+
+# Create button00 for digit 00
+button00 = tk.Button(register_frame, text="00", width=10, command=lambda: update_label('00'))
+button00.grid(row=4, column=1)
 
 # Create buttons for digits 1 through 9
 button1 = tk.Button(register_frame, text="1", width=10, command=lambda: update_label(1))
@@ -73,12 +81,12 @@ button_blank2 = tk.Button(register_frame, text="", width=10, state=tk.DISABLED)
 button_blank2.grid(row=3, column=4)
 
 button_blank3 = tk.Button(register_frame, text="", width=10, state=tk.DISABLED)
-button_blank3.grid(row=4, column=1)
+button_blank3.grid(row=4, column=2)
 
 button_blank4 = tk.Button(register_frame, text="", width=10, state=tk.DISABLED)
-button_blank4.grid(row=4, column=2)
+button_blank4.grid(row=4, column=3)
 
 button_blank5 = tk.Button(register_frame, text="", width=10, state=tk.DISABLED)
-button_blank5.grid(row=4, column=3)
+button_blank5.grid(row=4, column=4)
 
 root.mainloop()
