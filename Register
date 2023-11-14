@@ -2,9 +2,10 @@ import tkinter as tk
 
 def update_label(digit):
     current_text = label.cget("text")
-
-    # Remove the initial zeros
-    current_text = current_text.replace("0", "", 3)
+    
+    # Remove the initial zeros, except for the special cases of '0' and '00'
+    if current_text != '0' and current_text != '00':
+        current_text = current_text.replace("0", "", 3)
     
     # Remove the existing decimal point if present
     current_text = current_text.replace(".", "")
