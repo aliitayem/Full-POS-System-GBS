@@ -3,9 +3,12 @@ import tkinter as tk
 def update_label(number):
     current_value = label_var.get()
     if current_value == "0.00":
-        label_var.set(number)
+        label_var.set(f"0.{number}")
     else:
-        label_var.set(current_value + number)
+        decimal_index = current_value.index(".")
+        fractional_part = current_value[decimal_index+1:]
+        if len(fractional_part) < 2:
+            label_var.set(current_value + number)
 
 def clear_label():
     label_var.set("0.00")
