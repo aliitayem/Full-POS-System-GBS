@@ -1,38 +1,15 @@
+python
 def update_label(digit):
     current_text = label.cget("text")
     
-    # Remove the initial zeros, except for the special cases of '0' and '00'
-    if current_text != '0' and current_text != '00':
-        current_text = current_text.lstrip("0")
+    # Concatenate the clicked digit to the current text
+    current_text += str(digit)
     
-    # Split the current text into integer and decimal parts
-    if '.' in current_text:
-        integer_part, decimal_part = current_text.split(".")
-    else:
-        integer_part = current_text
-        decimal_part = ''
+    # Calculate the index for the decimal point
+    decimal_index = len(current_text) - 2
     
-    # Handle the special case of '00'
-    if digit == '00':
-        if decimal_part == '':
-            decimal_part = '00'
-        else:
-            decimal_part += digit
-    else:
-        # Add the clicked digit to the appropriate part (integer or decimal)
-        if decimal_part == '':
-            decimal_part = '0' + str(digit)
-        elif len(decimal_part) < 2:
-            decimal_part += str(digit)
-        else:
-            integer_part += decimal_part
-            decimal_part = '0' + str(digit)
-    
-    # Combine the integer and decimal parts with the decimal point
-    if decimal_part != '':
-        current_text = ".".join([integer_part, decimal_part])
-    else:
-        current_text = integer_part
+    # Insert the decimal point at the appropriate position
+    current_text = current_text[:decimal_index] + "." + current_text[decimal_index:]
     
     # Update the label text
     label.config(text=current_text)
