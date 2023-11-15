@@ -1,32 +1,38 @@
 import tkinter as tk
 
+python
 def update_label(digit):
     current_text = label.cget("text")
     
     # Remove the initial zeros, except for the special cases of '0' and '00'
     if current_text != '0' and current_text != '00':
-        current_text = current_text.replace("0", "", 1)
+        current_text = current_text.lstrip("0")
     
-    # Remove the existing decimal point if present
-    current_text = current_text.replace(".", "")
+    # Split the current text into integer and decimal parts
+    integer_part, decimal_part = current_text.split(".")
     
     # Handle the special case of '00'
     if digit == '00':
-        current_text += digit
+        integer_part += digit
     else:
-        # Add the clicked digit to the current text
-        current_text += str(digit)
+        # Add the clicked digit to the appropriate part (integer or decimal)
+        if decimal_part == '':
+            integer_part += str(digit)
+        else:
+            decimal_part += str(digit)
     
-    # Insert the decimal point at the appropriate position
-    if len(current_text) == 1:
-        current_text = "0.0" + current_text
-    elif len(current_text) == 2:
-        current_text = "0." + current_text
+    # Limit the decimal part to two digits
+    decimal_part = decimal_part[:2]
+    
+    # Combine the integer and decimal parts with the decimal point
+    if decimal_part != '':
+        current_text = integer_part + "." + decimal_part
     else:
-        current_text = current_text[:-2] + "." + current_text[-2:]
+        current_text = integer_part
     
     # Update the label text
     label.config(text=current_text)
+
 
 root = tk.Tk()
 
