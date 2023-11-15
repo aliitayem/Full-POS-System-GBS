@@ -1,60 +1,38 @@
-import tkinter as tk
-
-def update_label(number):
-    current_value = label_var.get()
-    if current_value == "0.00":
-        if number == "00":
-            label_var.set(f"0.{number}")
+def update_label(digit):
+    current_text = label.cget("text")
+    
+    # Remove the initial zeros, except for the special cases of '0' and '00'
+    if current_text != '0' and current_text != '00':
+        current_text = current_text.lstrip("0")
+    
+    # Split the current text into integer and decimal parts
+    if '.' in current_text:
+        integer_part, decimal_part = current_text.split(".")
+    else:
+        integer_part = current_text
+        decimal_part = ''
+    
+    # Handle the special case of '00'
+    if digit == '00':
+        if decimal_part == '':
+            decimal_part = '00'
         else:
-            label_var.set(number)
+            decimal_part += digit
     else:
-        decimal_index = current_value.index(".")
-        if len(current_value[decimal_index+1:]) < 2:
-            label_var.set(current_value + number)
-
-def clear_label():
-    label_var.set("0.00")
-
-root = tk.Tk()
-root.title("Cash Register")
-
-register_frame = tk.Frame(root)
-register_frame.pack()
-
-label_var = tk.StringVar()
-label_var.set("0.00")
-label = tk.Label(register_frame, textvariable=label_var, font=("Arial", 20))
-label.grid(row=0, column=0, columnspan=4)
-
-button_frame = tk.Frame(register_frame)
-button_frame.grid(row=1, column=0, sticky="sw")
-
-buttons = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "99"]
-row = 0
-column = 0
-for button in buttons:
-    if button == "00" or button == "99":
-        btn = tk.Button(button_frame, text=button, width=6, height=3, command=lambda num=button: update_label(num))
-        btn.grid(row=row, column=column, padx=2, pady=2, rowspan=2, columnspan=2)
-        column += 2
+        # Add the clicked digit to the appropriate part (integer or decimal)
+        if decimal_part == '':
+            decimal_part = '0' + str(digit)
+        elif len(decimal_part) < 2:
+            decimal_part += str(digit)
+        else:
+            integer_part += decimal_part
+            decimal_part = '0' + str(digit)
+    
+    # Combine the integer and decimal parts with the decimal point
+    if decimal_part != '':
+        current_text = ".".join([integer_part, decimal_part])
     else:
-        btn = tk.Button(button_frame, text=button, width=6, height=3, command=lambda num=button: update_label(num))
-        btn.grid(row=row, column=column, padx=2, pady=2)
-        column += 1
-    if column > 4:
-        column = 0
-        row += 1
-
-subtotal_btn = tk.Button(register_frame, text="Subtotal", width=12, height=3)
-subtotal_btn.grid(row=1, column=3, padx=2, pady=2, rowspan=2, columnspan=2)
-
-cash_btn = tk.Button(register_frame, text="Cash", width=12, height=3)
-cash_btn.grid(row=3, column=3, padx=2, pady=2, rowspan=2, columnspan=2)
-
-return_btn = tk.Button(register_frame, text="Return", width=12, height=3)
-return_btn.grid(row=1, column=5, padx=2, pady=2)
-
-clear_btn = tk.Button(register_frame, text="Clear", width=12, height=3, command=clear_label)
-clear_btn.grid(row=2, column=5, padx=2, pady=2)
-
-root.mainloop()
+        current_text = integer_part
+    
+    # Update the label text
+    label.config(text=current_text)
