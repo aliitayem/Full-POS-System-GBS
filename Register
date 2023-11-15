@@ -2,13 +2,14 @@ python
 def update_label(digit):
     current_text = label.cget("text")
     
+    # Remove the decimal point if it exists
+    current_text = current_text.replace(".", "")
+    
     # Concatenate the clicked digit to the current text
     current_text += str(digit)
     
-    # Calculate the index for the decimal point
+    # Insert the decimal point two characters from the last character
     decimal_index = len(current_text) - 2
-    
-    # Insert the decimal point at the appropriate position
     current_text = current_text[:decimal_index] + "." + current_text[decimal_index:]
     
     # Update the label text
