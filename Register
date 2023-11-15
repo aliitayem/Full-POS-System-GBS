@@ -1,9 +1,12 @@
-python
 def update_label(digit):
     current_text = label.cget("text")
     
     # Remove the decimal point if it exists
     current_text = current_text.replace(".", "")
+    
+    # Remove one of the initial three zeros
+    if current_text.startswith("0") and len(current_text) > 1:
+        current_text = current_text[1:]
     
     # Concatenate the clicked digit to the current text
     current_text += str(digit)
