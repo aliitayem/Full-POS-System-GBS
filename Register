@@ -1,61 +1,22 @@
 import tkinter as tk
-import mysql.connector
 
-# Create a function to fetch customer data from the "customers" table
-def fetch_customer_data(phone_number):
-    # Connect to your MySQL database
-    connection = mysql.connector.connect(
-        host="your_host",
-        user="your_username",
-        password="your_password",
-        database="your_database"
-    )
-    cursor = connection.cursor()
+def on_entry_click(event):
+    if entry.get() == "Enter text here":
+        entry.delete(0, tk.END)
+        entry.configure(foreground='black')
 
-    # Fetch the "discount" and "points" columns based on the phone number
-    query = "SELECT discount, points FROM customers WHERE phone_number = %s"
-    cursor.execute(query, (phone_number,))
-    result = cursor.fetchone()
+def on_focus_out(event):
+    if entry.get() == "":
+        entry.insert(0, "Enter text here")
+        entry.configure(foreground='gray')
 
-    cursor.close()
-    connection.close()
-
-    return result
-
-# Determine the discount based on the fetched customer data
-def determine_discount(phone_number):
-    customer_data = fetch_customer_data(phone_number)
-
-    if customer_data:
-        discount, points = customer_data
-
-        if discount == "Stylist":
-            return "10%"
-        elif discount == "Employee" or points == 100:
-            return "20%"
-
-    return "None"
-
-# Update the Discount label in your tkinter GUI
-def update_discount_label(phone_number):
-    discount = determine_discount(phone_number)
-    discount_label.config(text=discount)
-
-# Initialize your tkinter GUI
 root = tk.Tk()
 
-# Create your tkinter labels, treeview, and other elements
-
-# Example Discount label
-discount_label = tk.Label(root, text="None")
-discount_label.pack()
-
-# Example entry field for phone number
-phone_entry = tk.Entry(root)
-phone_entry.pack()
-
-# Example button to trigger the discount update
-update_button = tk.Button(root, text="Update Discount", command=lambda: update_discount_label(phone_entry.get()))
-update_button.pack()
+# Create an Entry widget
+entry = tk.Entry(root, width=30, fg='gray')
+entry.insert(0, "Enter text here")
+entry.bind("<FocusIn>", on_entry_click)
+entry.bind("<FocusOut>", on_focus_out)
+entry.pack()
 
 root.mainloop()
