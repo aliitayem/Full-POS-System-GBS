@@ -5,6 +5,8 @@ class WallGUI:
         self.root = tk.Tk()
         self.root.title("Beauty Supply Store Organizer")
 
+        self.conversion_rate = 100  # Conversion rate from inches to pixels
+
         # Create frame for wall dimensions
         dimensions_frame = tk.Frame(self.root)
         dimensions_frame.pack()
@@ -17,8 +19,8 @@ class WallGUI:
         self.height_entry = tk.Entry(dimensions_frame)
         self.height_entry.grid(row=1, column=1)
 
-        update_button = tk.Button(dimensions_frame, text="Update", command=self.update_wall)
-        update_button.grid(row=2, columnspan=2)
+        apply_button = tk.Button(dimensions_frame, text="Apply", command=self.update_wall)
+        apply_button.grid(row=2, columnspan=2)
 
         # Create labels and entry boxes for product details
         product_frame = tk.Frame(self.root)
@@ -58,11 +60,29 @@ class WallGUI:
         self.canvas = tk.Canvas(self.root, width=800, height=600, bg="white")
         self.canvas.pack()
 
-    def update_wall(self):
-        width = int(self.width_entry.get())
-        height = int(self.height_entry.get())
+    def convert_to_inches(self, dimension):
+        total_inches = 0
 
-        self.canvas.config(width=width, height=height)
+        feet, inches = dimension.split(",")
+        feet = feet.strip()
+        inches = inches.strip()
+
+        if feet:
+            total_inches += int(feet) * 12
+
+        if inches:
+            total_inches += int(inches)
+
+        return total_inches
+
+    def update_wall(self):
+        width = self.convert_to_inches(self.width_entry.get())
+        height = self.convert_to_inches(self.height_entry.get())
+
+        width_pixels = width * self.conversion_rate
+        height_pixels = height * self.conversion_rate
+
+        self.canvas.config(width=width_pixels, height=height_pixels)
 
     def add_product(self):
         name = self.name_entry.get()
