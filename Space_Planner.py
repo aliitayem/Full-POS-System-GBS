@@ -5,7 +5,7 @@ class WallGUI:
         self.root = tk.Tk()
         self.root.title("Beauty Supply Store Organizer")
 
-        self.conversion_rate = 100  # Conversion rate from inches to pixels
+        self.conversion_rate = 20  # Conversion rate from inches to pixels
 
         # Create frame for wall dimensions
         dimensions_frame = tk.Frame(self.root)
