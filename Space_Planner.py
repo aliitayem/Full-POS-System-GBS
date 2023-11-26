@@ -5,6 +5,21 @@ class WallGUI:
         self.root = tk.Tk()
         self.root.title("Beauty Supply Store Organizer")
 
+        # Create frame for wall dimensions
+        dimensions_frame = tk.Frame(self.root)
+        dimensions_frame.pack()
+
+        tk.Label(dimensions_frame, text="Wall Width:").grid(row=0, column=0)
+        self.width_entry = tk.Entry(dimensions_frame)
+        self.width_entry.grid(row=0, column=1)
+
+        tk.Label(dimensions_frame, text="Wall Height:").grid(row=1, column=0)
+        self.height_entry = tk.Entry(dimensions_frame)
+        self.height_entry.grid(row=1, column=1)
+
+        update_button = tk.Button(dimensions_frame, text="Update", command=self.update_wall)
+        update_button.grid(row=2, columnspan=2)
+
         # Create labels and entry boxes for product details
         product_frame = tk.Frame(self.root)
         product_frame.pack()
@@ -22,12 +37,12 @@ class WallGUI:
         self.color_entry.grid(row=2, column=1)
 
         tk.Label(product_frame, text="Width:").grid(row=3, column=0)
-        self.width_entry = tk.Entry(product_frame)
-        self.width_entry.grid(row=3, column=1)
+        self.prod_width_entry = tk.Entry(product_frame)
+        self.prod_width_entry.grid(row=3, column=1)
 
         tk.Label(product_frame, text="Height:").grid(row=4, column=0)
-        self.height_entry = tk.Entry(product_frame)
-        self.height_entry.grid(row=4, column=1)
+        self.prod_height_entry = tk.Entry(product_frame)
+        self.prod_height_entry.grid(row=4, column=1)
 
         # Create buttons to add product and obstruction
         action_frame = tk.Frame(self.root)
@@ -43,12 +58,18 @@ class WallGUI:
         self.canvas = tk.Canvas(self.root, width=800, height=600, bg="white")
         self.canvas.pack()
 
+    def update_wall(self):
+        width = int(self.width_entry.get())
+        height = int(self.height_entry.get())
+
+        self.canvas.config(width=width, height=height)
+
     def add_product(self):
         name = self.name_entry.get()
         brand = self.brand_entry.get()
         color = self.color_entry.get()
-        width = int(self.width_entry.get())
-        height = int(self.height_entry.get())
+        width = int(self.prod_width_entry.get())
+        height = int(self.prod_height_entry.get())
 
         # Add product logic goes here
 
