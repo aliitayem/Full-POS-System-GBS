@@ -1,67 +1,69 @@
 import tkinter as tk
+from tkinter import ttk
+import mysql.connector
 
-# Conversion rate: 1 inch = 10 pixels
-conversion_rate = 10
-
-# Wall dimensions in inches
-wall_width_inches = 189.5
-wall_height_inches = 116
-
-# Convert wall dimensions to pixels
-wall_width = wall_width_inches * conversion_rate
-wall_height = wall_height_inches * conversion_rate
-
-# Slit dimensions in inches
-slit_width_inches = 0.5
-slit_spacing_inches = 3
-
-# Convert slit dimensions to pixels
-slit_width = slit_width_inches * conversion_rate
-slit_spacing = slit_spacing_inches * conversion_rate
-
-# Obstruction dimensions in inches
-obstruction1_width_inches = 66
-obstruction1_height_inches = 51
-obstruction1_x_inches = 66
-obstruction1_y_inches = 51
-
-obstruction2_width_inches = 7
-obstruction2_height_inches = 98
-obstruction2_x_inches = 7
-obstruction2_y_inches = 32
-
-# Convert obstruction dimensions to pixels
-obstruction1_width = obstruction1_width_inches * conversion_rate
-obstruction1_height = obstruction1_height_inches * conversion_rate
-obstruction1_x = obstruction1_x_inches * conversion_rate
-obstruction1_y = obstruction1_y_inches * conversion_rate
-
-obstruction2_width = obstruction2_width_inches * conversion_rate
-obstruction2_height = obstruction2_height_inches * conversion_rate
-obstruction2_x = obstruction2_x_inches * conversion_rate
-obstruction2_y = obstruction2_y_inches * conversion_rate
-
-root = tk.Tk()
-canvas = tk.Canvas(root, width=wall_width, height=wall_height)
+# Set up the main window
+window = tk.Tk()
+window.title("Drag and Drop Program")
+canvas_width = 1900
+canvas_height = 1000
+canvas = tk.Canvas(window, width=canvas_width, height=canvas_height)
 canvas.pack()
 
-# Draw the wall
-canvas.create_rectangle(0, 0, wall_width, wall_height, fill='gray')
+# Set up the database connection
+db = mysql.connector.connect(
+    host="your_host",
+    user="your_username",
+    password="your_password",
+    database="your_database"
+)
+cursor = db.cursor()
 
-# Draw the slits
-y = wall_height - conversion_rate  # Starting position of the first slit
-while y >= conversion_rate:
-    if (
-        y > obstruction1_y + obstruction1_height or
-        y < obstruction1_y or
-        y > obstruction2_y + obstruction2_height or
-        y < obstruction2_y
-    ):
-        canvas.create_rectangle(0, y, wall_width, y + slit_width, fill='white')
-    y -= slit_spacing
+# Retrieve data from the MySQL table
+cursor.execute("SELECT width, height, name, color FROM productDimensions")
+rows = cursor.fetchall()
 
-# Draw the obstructions
-canvas.create_rectangle(obstruction1_x, obstruction1_y, obstruction1_x + obstruction1_width, obstruction1_y + obstruction1_height, fill='blue')
-canvas.create_rectangle(obstruction2_x, obstruction2_y, obstruction2_x + obstruction2_width, obstruction2_y + obstruction2_height, fill='blue')
+# Conversion rate from inches to pixels
+conversion_rate = 10  # Adjust this value based on your desired ratio
 
-root.mainloop()
+# Create frames for each row in the table
+frames = []
+for row in rows:
+    width_in_inches, height_in_inches, name, color = row
+    width_in_pixels = width_in_inches * conversion_rate
+    height_in_pixels = height_in_inches * conversion_rate
+
+    frame = ttk.Frame(canvas, width=width_in_pixels, height=height_in_pixels, relief="solid", borderwidth=1)
+    label = ttk.Label(frame, text=f"{name}\n{color}", justify="center")
+    label.pack(fill="both", expand=True)
+    frame.pack_propagate(0)  # Prevent the frame from resizing based on label content
+    frames.append(frame)
+
+# Place the frames inside a larger frame underneath the wall canvas
+frame_container = ttk.Frame(window)
+frame_container.pack()
+
+for frame in frames:
+    frame.grid(row=0, column=frames.index(frame))
+
+# Slit dimensions
+slit_width = 3  # Width of each slit in inches
+slit_interval = 3  # Distance between each slit in inches
+slit_start_y = canvas_height - conversion_rate  # Starting y-coordinate of the slits, 1 inch from the bottom
+
+# Calculate the number of slits based on the canvas width
+num_slits = canvas_width // conversion_rate
+
+# Draw the slits on the wall canvas
+for i in range(num_slits):
+    x = i * conversion_rate
+    canvas.create_line(x, slit_start_y, x, canvas_height, fill="black", width=1)
+
+# TODO: Implement drag and drop functionality
+
+# Run the main event loop
+window.mainloop()
+
+# Close the database connection
+cursor.close()
+db.close()
