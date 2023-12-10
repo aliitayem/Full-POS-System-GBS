@@ -36,38 +36,9 @@ class DragDropApp:
         widget = self.drag_data['widget']
         widget.place(x=widget.winfo_x() + dx, y=widget.winfo_y() + dy)
 
-        self.check_collisions()
-
     def on_drag_release(self, event):
         self.snap_to_closest_label()
         self.drag_data['widget'] = None
-
-    def check_collisions(self):
-        for label in self.labels:
-            if label == self.drag_data['widget']:
-                continue
-
-            x1, y1, x2, y2 = self.get_widget_bbox(label)
-            x3, y3, x4, y4 = self.get_widget_bbox(self.drag_data['widget'])
-
-            # Check for collision between labels
-            if x1 < x4 < x2 or x1 < x3 < x2:
-                if y1 < y4 < y2 or y1 < y3 < y2:
-                    self.stop_movement()
-
-            # Check for collision with GUI borders
-            if x3 < 0 or y3 < 0 or x4 > self.root.winfo_width() or y4 > self.root.winfo_height():
-                self.stop_movement()
-
-    def get_widget_bbox(self, widget):
-        x = widget.winfo_x()
-        y = widget.winfo_y()
-        width = widget.winfo_width()
-        height = widget.winfo_height()
-        return x, y, x + width, y + height
-
-    def stop_movement(self):
-        self.drag_data['widget'].place(x=self.drag_data['widget'].winfo_x(), y=self.drag_data['widget'].winfo_y())
 
     def snap_to_closest_label(self):
         closest_label = None
@@ -89,8 +60,35 @@ class DragDropApp:
                 closest_label = label
 
         if closest_label:
-            x, y, _, _ = self.get_widget_bbox(closest_label)
-            self.drag_data['widget'].place(x=x, y=y)
+            x1, y1, _, _ = self.get_widget_bbox(closest_label)
+            x2, y2, _, _ = self.get_widget_bbox(self.drag_data['widget'])
+
+            # Calculate the distances from the current label to the closest label's borders
+            distances = {
+                'top': abs(y1 - y2),
+                'bottom': abs(y1 - (y2 + closest_label.winfo_height())),
+                'left': abs(x1 - x2),
+                'right': abs(x1 - (x2 + closest_label.winfo_width()))
+            }
+
+            # Find the minimum distance and snap to the corresponding border
+            min_distance = min(distances.values())
+
+            if min_distance == distances['top']:
+                self.drag_data['widget'].place(x=x2, y=y1)
+            elif min_distance == distances['bottom']:
+                self.drag_data['widget'].place(x=x2, y=y1 + closest_label.winfo_height() - self.drag_data['widget'].winfo_height())
+            elif min_distance == distances['left']:
+                self.drag_data['widget'].place(x=x1, y=y2)
+            else:
+                self.drag_data['widget'].place(x=x1 + closest_label.winfo_width() - self.drag_data['widget'].winfo_width(), y=y2)
+
+    def get_widget_bbox(self, widget):
+        x = widget.winfo_x()
+        y = widget.winfo_y()
+        width = widget.winfo_width()
+        height = widget.winfo_height()
+        return x, y, x + width, y + height
 
 if __name__ == '__main__':
     root = tk.Tk()
