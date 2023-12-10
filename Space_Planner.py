@@ -45,13 +45,13 @@ class DragDropApp:
             if label == self.drag_data['widget']:
                 continue
 
-            # Get the bounding box coordinates of the labels
             x1, y1, x2, y2 = self.get_widget_bbox(label)
             x3, y3, x4, y4 = self.get_widget_bbox(self.drag_data['widget'])
 
             # Check for collision between labels
-            if x1 < x4 < x2 and y1 < y4 < y2:
-                self.stop_movement()
+            if x1 < x4 < x2 or x1 < x3 < x2:
+                if y1 < y4 < y2 or y1 < y3 < y2:
+                    self.stop_movement()
 
             # Check for collision with GUI borders
             if x3 < 0 or y3 < 0 or x4 > self.root.winfo_width() or y4 > self.root.winfo_height():
