@@ -157,6 +157,37 @@ def determine_discount(phone_number):
     return "None"
 
 
+def Return():
+    # Establish a connection to the MySQL database
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="root",
+        database="inventory"
+    )
+
+    mycursor = db.cursor()
+
+    global TaxedReturnsTotal
+
+    mycursor.execute("UPDATE inventory.carts SET Status = 'Return' WHERE Status = 'Sale'")
+    mycursor.execute("UPDATE inventory.carts SET price = -price WHERE Status = 'Return'")
+    mycursor.execute("SELECT * FROM inventory.carts WHERE price < 0")
+    return_results = mycursor.fetchall()
+    mycursor.execute("SELECT (price * quantity) * 1.092 AS ReturnSubtotal FROM inventory.carts WHERE price < 0")
+    taxed_return_results = mycursor.fetchall()
+
+    TaxedReturnsSubtotal = sum(row[0] for row in taxed_return_results)
+    TaxedReturnsTotal = round(TaxedReturnsSubtotal, 2)
+
+    db.commit()
+
+    mycursor.close()
+    db.close()
+
+    update_discount_label(phone_entry.get())
+    query_database2()
+
 
 # Update the Discount label in your tkinter GUI
 def update_discount_label(phone_number):
@@ -183,6 +214,7 @@ def update_discount_label(phone_number):
     results = mycursor.fetchall()
 
     global manual_discount
+    global TaxedReturnsTotal
 
 
 
@@ -238,7 +270,7 @@ def update_discount_label(phone_number):
     Discount_number.config(text=discount_percentage)
     Total_number.config(text=rounded_total)
 
-    print(discount)
+    print(TaxedReturnsTotal)
 
 
     # Close the cursor and database connection
@@ -246,18 +278,6 @@ def update_discount_label(phone_number):
     mycursor.close()
     db.commit()
     db.close()
-
-
-def get_Total():
-    # Establish a connection to the MySQL database
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        passwd="root",
-        database="inventory"
-    )
-
-    mycursor = db.cursor()
 
 
 def update_label(digit):
@@ -312,8 +332,6 @@ def add_To_Cart(self):
     db.close()
 
     barcode_entry2.delete(0, END)
-
-    get_Total()
 
     global phone_entry
     value = phone_entry
@@ -475,7 +493,7 @@ button9.grid(row=3, column=2)
 button_cash = tk.Button(Register_Button_Frame, text="Cash", width=28, height=7, command=lambda: update_label('9'))
 button_cash.grid(row=6, column=3, columnspan=2)
 
-button_return = tk.Button(Register_Button_Frame, text="Return", width=13, height=7, command=lambda: update_label('9'))
+button_return = tk.Button(Register_Button_Frame, text="Return", width=13, height=7, command=lambda: Return())
 button_return.grid(row=4, column=3)
 
 button_discount = tk.Button(Register_Button_Frame, text="Discount", width=13, height=7, command=lambda: update_discount_label(phone_entry.get()))
