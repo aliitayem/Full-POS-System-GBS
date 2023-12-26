@@ -1,9 +1,6 @@
 # Full-POS-System-GBS
 
-FullApp.py
-
-
-WIMS.py:
+## WIMS.py:
 
 '''
 Introducing the Wig Inventory Management 
